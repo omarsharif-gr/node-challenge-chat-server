@@ -1,4 +1,70 @@
 <!DOCTYPE html>
+<head>
+  <title>Chat app</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<div class="container">
+  <br>
+  <div class="jumbotron text-center">
+        <h1 class="display-4">Send Message</h1>
+        <br>
+        <input id="name" class="form-control" placeholder="Name">
+        <br>
+        <textarea id="message" class="form-control" placeholder="Message"></textarea>
+        <br>
+        <button id="send" class="btn btn-success">Send</button>
+        </div>
+        <div id="messages">
+        
+        </div>
+        </div>
+        <script>
+          var socket = io()
+          $(() => {
+            $("#send").click(() => {
+              var message = { name: $("#name").val(), message: $("#message").val() }
+              postMessage(message)
+            })
+            getMessages()
+          })
+
+          socket.on("message",addMessages)
+
+          function addMessages(message) {
+            $("#messages").append(`<h4> ${message.name} </h4> <p> ${message.message} </p>`)
+          }
+
+          function getMessages() {
+            $.get('http://localhost:3000/messages', (data) => {
+              data.forEach(addMessages);
+            })
+          }
+
+          function postMessage(message) {
+            $.post('http://localhost:3000/messages', message)
+          }
+        </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
 <html lang="en">
   <head>
     <title>Welcome to CYF Chat</title>
@@ -10,12 +76,15 @@
     <h2>
       Send a message
     </h2>
-    <form action="/messages" method="post">
-      <p>
-        Name: <input type="text" name="from" placeholder="Your Name" /> <br />
-        Message: <input type="text" name="text" placeholder="The message..." />
-        <br />
-      </p>
+    <form action="/messages" method="POST">
+      <div>
+        <label for="name">Name</label>
+        <br><input type="text" name="from" placeholder="Your Name" /> <br />
+      </div>  
+      <div> 
+        <label for="message">Message</label>
+        <br><input type="text" name="text" placeholder="The message..." id="message" /></br>
+      </div>
       <button type="submit">
         Send
       </button>
@@ -23,4 +92,4 @@
 
     <a href="/messages">See all messages</a>
   </body>
-</html>
+</html> -->
